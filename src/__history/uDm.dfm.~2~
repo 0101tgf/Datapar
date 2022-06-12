@@ -1,0 +1,22 @@
+object dm: Tdm
+  OldCreateOrder = False
+  Height = 303
+  Width = 392
+  object FDGUIxWaitCursor: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 80
+    Top = 120
+  end
+  object conexao: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      'OpenMode=ReadWrite'
+      'LockingMode=Normal')
+    Left = 200
+    Top = 120
+  end
+  object FDPhysSQLiteDriverLink: TFDPhysSQLiteDriverLink
+    Left = 136
+    Top = 40
+  end
+end
