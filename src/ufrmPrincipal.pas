@@ -58,7 +58,7 @@ implementation
 
 {$R *.dfm}
 
-uses ufrmSimulacaoJuros, ufrmClientes, ufrmLogin;
+uses ufrmClientes, ufrmLogin;
 
 procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -153,8 +153,8 @@ begin
   {Gestoa de Financeira}
   if TreeView_Menu.Items.Item[26].Selected = true then
   begin
-  SplitView.Width := 320;
-  TreeView_Menu.Width := 320;
+  SplitView.Width := 250;
+  TreeView_Menu.Width := 250;
   end;
 
   if TreeView_Menu.Items.Item[28].Selected = true then
@@ -202,21 +202,6 @@ end;
 
 procedure TfrmPrincipal.pTreeView_MenuGestaoFinanceiraDBL;
 begin
-
-  {Simulação de juros}
-  if TreeView_Menu.Items.Item[27].Selected = true then
-  begin
-
-    if not Assigned(frmSimulacaoJuros) then
-    begin
-      Application.CreateForm(TfrmSimulacaoJuros,frmSimulacaoJuros);
-    end;
-
-    frmSimulacaoJuros.Show;
-    frmPrincipal.pnlContent.Visible := false;
-
-  end;
-
 end;
 
 procedure TfrmPrincipal.pTreeView_MenuGestaoRecursosHumanosDBL;
@@ -251,7 +236,7 @@ end;
 procedure TfrmPrincipal.pVerificarFormAberto;
 begin
 
-  if (Assigned(frmClientes)) or (Assigned(frmSimulacaoJuros)) then
+  if (Assigned(frmClientes)) then
   begin
     exit;
   end;
