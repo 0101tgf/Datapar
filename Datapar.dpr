@@ -6,7 +6,8 @@ uses
   ufrmLogin in 'src\ufrmLogin.pas' {frmLogin},
   cUser in 'src\Classes\cUser.pas',
   uDm in 'src\uDm.pas' {dm: TDataModule},
-  ufrmClientes in 'src\ufrmClientes.pas' {frmClientes};
+  ufrmClientes in 'src\ufrmClientes.pas' {frmClientes},
+  cCliente in 'src\Classes\cCliente.pas';
 
 {$R *.res}
 

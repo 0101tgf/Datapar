@@ -1,7 +1,7 @@
 object frmPrincipal: TfrmPrincipal
   Left = 0
   Top = 0
-  Caption = 'Datapar - Sistema de Amortiza'#231#227'o Juros'
+  Caption = 'Datapar - ERP'
   ClientHeight = 729
   ClientWidth = 1008
   Color = clWhite
