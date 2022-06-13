@@ -50,6 +50,9 @@ begin
   inherited;
 end;
 
+{$endregion}
+
+{$region 'METODOS'}
 function TCliente.fConsultaCliente(ANome:String;out ARetorno:String;
 out AQry : TFDQuery):Boolean;
 begin
