@@ -492,6 +492,8 @@ object frmPrincipal: TfrmPrincipal
         006100E700F50065007300320000000A0000000A000000FFFFFFFFFFFFFFFF00
         0000000000000000000000010A520065006C0061007400F300720069006F0073
         00}
+      ExplicitLeft = 1
+      ExplicitTop = 5
     end
   end
   object ImageList: TImageList

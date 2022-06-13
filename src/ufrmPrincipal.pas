@@ -151,13 +151,7 @@ begin
   {Fim}
 
   {Gestoa de Financeira}
-  if TreeView_Menu.Items.Item[26].Selected = true then
-  begin
-  SplitView.Width := 250;
-  TreeView_Menu.Width := 250;
-  end;
-
-  if TreeView_Menu.Items.Item[28].Selected = true then
+  if TreeView_Menu.Items.Item[27].Selected = true then
   begin
   SplitView.Width := 300;
   TreeView_Menu.Width := 300;
