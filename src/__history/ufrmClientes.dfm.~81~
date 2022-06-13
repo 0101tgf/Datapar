@@ -77,7 +77,7 @@ object frmClientes: TfrmClientes
           Font.Style = [fsBold]
           ParentFont = False
           OnClick = btn_NovoClick
-          ExplicitTop = -7
+          ExplicitTop = -9
         end
       end
       object Panel2: TPanel
@@ -152,6 +152,7 @@ object frmClientes: TfrmClientes
           Font.Name = 'Tahoma'
           Font.Style = [fsBold]
           ParentFont = False
+          OnClick = btn_SalvarClick
           ExplicitTop = -9
         end
       end
@@ -292,94 +293,104 @@ object frmClientes: TfrmClientes
     ActivePage = TabSheet2
     Align = alClient
     TabOrder = 1
+    ExplicitTop = -2
     object TabSheet_Cadastro: TTabSheet
       Caption = 'Cadastro'
-      object Label2: TLabel
-        Left = 3
-        Top = 56
-        Width = 37
-        Height = 13
-        Caption = 'C'#243'digo:'
-      end
-      object Label3: TLabel
-        Left = 132
-        Top = 56
-        Width = 31
-        Height = 13
-        Caption = 'Nome:'
-      end
-      object Label4: TLabel
-        Left = 328
-        Top = 56
-        Width = 55
-        Height = 13
-        Caption = 'CPF / Cnpj:'
-      end
-      object Panel_Top: TPanel
+      object pnl_Cadastro: TPanel
         Left = 0
         Top = 0
         Width = 876
-        Height = 41
-        Align = alTop
+        Height = 368
+        Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        object lbl_Titulo: TLabel
-          AlignWithMargins = True
+        object Label2: TLabel
           Left = 3
-          Top = 3
-          Width = 159
-          Height = 34
-          Align = alLeft
-          Caption = 'Cadastro de Clientes:'
-          Color = 12477460
-          Font.Charset = ANSI_CHARSET
-          Font.Color = 12477460
-          Font.Height = -15
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          ParentColor = False
-          ParentFont = False
-          Layout = tlCenter
-          ExplicitHeight = 18
+          Top = 56
+          Width = 37
+          Height = 13
+          Caption = 'C'#243'digo:'
         end
-        object pnl_barra: TPanel
+        object Label3: TLabel
+          Left = 132
+          Top = 56
+          Width = 31
+          Height = 13
+          Caption = 'Nome:'
+        end
+        object Label4: TLabel
+          Left = 328
+          Top = 56
+          Width = 55
+          Height = 13
+          Caption = 'CPF / Cnpj:'
+        end
+        object Panel_Top: TPanel
           Left = 0
-          Top = 40
+          Top = 0
           Width = 876
-          Height = 1
-          Align = alBottom
+          Height = 41
+          Align = alTop
           BevelOuter = bvNone
-          Color = 15395562
-          ParentBackground = False
           TabOrder = 0
+          object lbl_Titulo: TLabel
+            AlignWithMargins = True
+            Left = 3
+            Top = 3
+            Width = 159
+            Height = 34
+            Align = alLeft
+            Caption = 'Cadastro de Clientes:'
+            Color = 12477460
+            Font.Charset = ANSI_CHARSET
+            Font.Color = 12477460
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentColor = False
+            ParentFont = False
+            Layout = tlCenter
+            ExplicitHeight = 18
+          end
+          object pnl_barra: TPanel
+            Left = 0
+            Top = 40
+            Width = 876
+            Height = 1
+            Align = alBottom
+            BevelOuter = bvNone
+            Color = 15395562
+            ParentBackground = False
+            TabOrder = 0
+          end
         end
-      end
-      object edt_CodCliente: TEdit
-        Left = 3
-        Top = 75
-        Width = 121
-        Height = 21
-        TabStop = False
-        Color = clBtnFace
-        Enabled = False
-        ReadOnly = True
-        TabOrder = 1
-      end
-      object edt_NomeCliente: TEdit
-        Left = 132
-        Top = 75
-        Width = 186
-        Height = 21
-        MaxLength = 35
-        TabOrder = 2
-      end
-      object Edit_CPFCNPJ: TEdit
-        Left = 328
-        Top = 75
-        Width = 183
-        Height = 21
-        MaxLength = 18
-        TabOrder = 3
+        object edt_CodCliente: TEdit
+          Left = 3
+          Top = 75
+          Width = 121
+          Height = 21
+          TabStop = False
+          Color = clBtnFace
+          Enabled = False
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object edt_NomeCliente: TEdit
+          Left = 132
+          Top = 75
+          Width = 186
+          Height = 21
+          MaxLength = 35
+          TabOrder = 2
+        end
+        object Edit_CPFCNPJ: TEdit
+          Left = 328
+          Top = 75
+          Width = 183
+          Height = 21
+          MaxLength = 18
+          TabOrder = 3
+        end
       end
     end
     object TabSheet2: TTabSheet
@@ -529,6 +540,7 @@ object frmClientes: TfrmClientes
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = dbg_registrosCabDblClick
         Columns = <
           item
             Expanded = False
@@ -611,6 +623,7 @@ object frmClientes: TfrmClientes
       FieldName = 'Codigo'
       Origin = 'Codigo'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object qry_CadastroNome: TStringField
       FieldName = 'Nome'

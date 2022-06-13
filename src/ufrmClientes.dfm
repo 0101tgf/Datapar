@@ -42,8 +42,6 @@ object frmClientes: TfrmClientes
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 4
-      ExplicitTop = 3
       object Panel6: TPanel
         AlignWithMargins = True
         Left = 3
@@ -79,7 +77,7 @@ object frmClientes: TfrmClientes
           Font.Style = [fsBold]
           ParentFont = False
           OnClick = btn_NovoClick
-          ExplicitTop = -9
+          ExplicitTop = -7
         end
       end
       object Panel2: TPanel
@@ -155,7 +153,7 @@ object frmClientes: TfrmClientes
           Font.Style = [fsBold]
           ParentFont = False
           OnClick = btn_SalvarClick
-          ExplicitTop = -9
+          ExplicitTop = -7
         end
       end
       object Panel7: TPanel
@@ -292,7 +290,7 @@ object frmClientes: TfrmClientes
     Top = 0
     Width = 884
     Height = 396
-    ActivePage = TabSheet_Cadastro
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 1
     object TabSheet_Cadastro: TTabSheet
@@ -305,8 +303,6 @@ object frmClientes: TfrmClientes
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 2
-        ExplicitTop = 2
         object Label2: TLabel
           Left = 3
           Top = 56
@@ -543,6 +539,7 @@ object frmClientes: TfrmClientes
         TitleFont.Height = -15
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = dbg_registrosCabDblClick
         Columns = <
           item
             Expanded = False
@@ -625,6 +622,7 @@ object frmClientes: TfrmClientes
       FieldName = 'Codigo'
       Origin = 'Codigo'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object qry_CadastroNome: TStringField
       FieldName = 'Nome'

@@ -58,6 +58,7 @@ type
     qry_CadastroNome: TStringField;
     qry_CadastroCpf_Cnpj: TStringField;
     qry_CadastroAtivo: TStringField;
+    pnl_Cadastro: TPanel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_FecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -67,9 +68,12 @@ type
     procedure edt_ConsultaClienteKeyPress(Sender: TObject; var Key: Char);
     procedure btn_ConClienteClick(Sender: TObject);
     procedure SpeedButton_ExcluirClick(Sender: TObject);
+    procedure btn_SalvarClick(Sender: TObject);
+    procedure dbg_registrosCabDblClick(Sender: TObject);
   private
     { Private declarations }
     procedure pLimparCampos;
+    function fValidaCamposObrigatorios:Boolean;
   public
     { Public declarations }
   end;
@@ -87,6 +91,9 @@ procedure TfrmClientes.btn_CancelarClick(Sender: TObject);
 begin
 pLimparCampos;
 PageControl_Cad.TabIndex := 0;
+pnl_Cadastro.Enabled := false;
+qry_Consulta.Active := false;
+qry_Cadastro.Active := false;
 end;
 
 procedure TfrmClientes.btn_ConClienteClick(Sender: TObject);
@@ -119,9 +126,88 @@ begin
 end;
 
 procedure TfrmClientes.btn_NovoClick(Sender: TObject);
+var
+  oCliente : TCliente;
 begin
-pLimparCampos;
-PageControl_Cad.TabIndex := 0;
+
+  pLimparCampos;
+  PageControl_Cad.TabIndex := 0;
+
+  oCliente := TCliente.Create(dm.Conexao);
+  try
+
+
+    if oCliente.fGeraNumeroCliente then
+    begin
+      pnl_Cadastro.Enabled := true;
+      edt_CodCliente.Text := oCliente.Codigo.ToString;
+      edt_NomeCliente.SetFocus;
+    end
+    else
+    begin
+      ShowMessage('Falha ao gerar codigo do cliente..');
+      btn_CancelarClick(Self);
+    end;
+
+  finally
+  oCliente.DisposeOf;
+  end;
+
+end;
+
+procedure TfrmClientes.btn_SalvarClick(Sender: TObject);
+var
+  oCliente : TCliente;
+  LRetorno : String;
+begin
+
+  if not fValidaCamposObrigatorios then
+  begin
+    ShowMessage('Por favor, preencha todos os campos..');
+    exit;
+  end;
+
+  oCliente := TCliente.Create(dm.Conexao);
+  try
+
+    oCliente.CodEmp := frmPrincipal.vCodEmpLogado;
+    oCliente.Nome := edt_NomeCliente.Text;
+    oCliente.Cpf_Cnpj := Edit_CPFCNPJ.Text;
+    oCliente.Codigo := StrToInt(edt_CodCliente.Text);
+    oCliente.Ativo := 'S';
+
+    if not (oCliente.fSalvarCliente(LRetorno)) then
+    begin
+      ShowMessage(LRetorno);
+      btn_CancelarClick(Sender);
+    end
+    else
+    begin
+      ShowMessage(LRetorno);
+      btn_CancelarClick(Sender);
+    end;
+
+  finally
+  oCliente.DisposeOf;
+  end;
+
+end;
+
+procedure TfrmClientes.dbg_registrosCabDblClick(Sender: TObject);
+begin
+
+  if qry_Consulta.RecordCount = 0 then
+  begin
+    exit;
+  end;
+
+  pLimparCampos;
+  edt_CodCliente.Text := qry_Consulta.FieldByName('Codigo').AsString;
+  edt_NomeCliente.Text := qry_Consulta.FieldByName('Nome').AsString;
+  Edit_CPFCNPJ.Text := qry_Consulta.FieldByName('Cpf_Cnpj').AsString;
+  pnl_Cadastro.Enabled := true;
+  PageControl_Cad.TabIndex := 0;
+
 end;
 
 procedure TfrmClientes.edt_ConsultaClienteKeyPress(Sender: TObject;
@@ -147,13 +233,36 @@ end;
 procedure TfrmClientes.FormShow(Sender: TObject);
 begin
   PageControl_Cad.TabIndex := 0;
+  btn_NovoClick(Sender);
+end;
+
+function TfrmClientes.fValidaCamposObrigatorios: Boolean;
+begin
+
+  Result := false;
+
+  if Trim(edt_CodCliente.Text) = EmptyStr then
+  begin
+    Exit;
+  end;
+
+  if Trim(edt_NomeCliente.Text) = EmptyStr then
+  begin
+    exit;
+  end;
+
+  if Trim(Edit_CPFCNPJ.Text) = EmptyStr then
+  begin
+    exit;
+  end;
+
+  Result := true;
+
 end;
 
 procedure TfrmClientes.pLimparCampos;
 begin
 edt_ConsultaCliente.Text := '';
-qry_Consulta.Active := false;
-qry_Cadastro.Active := false;
 edt_CodCliente.Text := '';
 edt_NomeCliente.Text := '';
 Edit_CPFCNPJ.Text := '';
@@ -169,12 +278,15 @@ begin
 
   if qry_Consulta.RecordCount = 0 then
   begin
-    ShowMessage('Não a nada para excluir..');
+    ShowMessage('Por favor, primeiro pesquise o cliente que você quer excluir..');
+    edt_ConsultaCliente.SetFocus;
     exit;
   end;
 
   oCliente := TCliente.Create(dm.Conexao);
   try
+
+    oCliente.CodEmp := frmPrincipal.vCodEmpLogado;
 
     if not (oCliente.fExcluirCliente(qry_Consulta.FieldByName('Codigo').AsInteger,LRetorno)) then
     begin
@@ -183,6 +295,7 @@ begin
     else
     begin
     ShowMessage(LRetorno);
+    qry_Consulta.Refresh;
     end;
 
   finally

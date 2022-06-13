@@ -30,7 +30,9 @@ type
     constructor Create(AConexao:TFDConnection);
     destructor Destroy; override;
     function fConsultaCliente(ANome:String;out ARetorno:String;out AQry : TFDQuery):Boolean;
-    function fExcluirCliente(ACodigo: Integer; ARetorno:String):Boolean;
+    function fExcluirCliente(ACodigo: Integer; out ARetorno:String):Boolean;
+    function fGeraNumeroCliente:Boolean;
+    function fSalvarCliente(out ARetorno:String):Boolean;
 End;
 
 implementation
@@ -71,7 +73,6 @@ begin
 
     if AQry.RecordCount = 0 then
     begin
-      Result := true;
       ARetorno := 'Nenhum cliente encontrado..';
       exit;
     end
@@ -88,7 +89,7 @@ begin
 
 end;
 
-function TCliente.fExcluirCliente(ACodigo: Integer; ARetorno: String): Boolean;
+function TCliente.fExcluirCliente(ACodigo: Integer; out ARetorno: String): Boolean;
 var
   qry : TFDQuery;
 begin
@@ -108,13 +109,85 @@ begin
 
     if qry.RowsAffected = 1 then
     begin
-      ARetorno := 'Cliente deletado com sucesso';
+      ARetorno := 'Cliente deletado com sucesso..';
       Result := true;
+    end
+    else
+    begin
+      ARetorno := 'Falha ao excluir cliente, solicite suporte..';
     end;
 
   finally
   qry.DisposeOf;
   end;
+
+end;
+
+function TCliente.fGeraNumeroCliente: Boolean;
+var
+  Qry : TFDQuery;
+begin
+
+  Result := false;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conexao;
+  try
+
+    Qry.Active := false;
+    Qry.SQL.clear;
+    Qry.SQL.Add('select * from sqlite_sequence where name = ''TAB_CLIENTES'' ');
+    Qry.Active := true;
+
+    if Qry.RecordCount > 0 then
+    begin
+    Codigo := Qry.FieldByName('seq').AsInteger+1;
+    Result := true;
+    end;
+
+  finally
+  Qry.DisposeOf;
+  end;
+
+end;
+
+function TCliente.fSalvarCliente(out ARetorno: String): Boolean;
+var
+  qry : TFDQuery;
+begin
+
+   Result := false;
+
+   qry := TFDQuery.Create(Nil);
+   try
+
+    qry.Connection := Conexao;
+    qry.Active := false;
+    qry.SQL.Clear;
+    qry.SQL.Add('insert into TAB_CLIENTES(CodEmp,Codigo,Nome,Cpf_Cnpj,Ativo) ');
+    qry.SQL.Add('values (:CodEmp,:Codigo,:Nome,:Cpf_Cnpj,:Ativo)');
+    qry.SQL.Add('ON CONFLICT(Codigo) DO UPDATE SET ');
+    qry.SQL.Add('Nome=:Nome, Cpf_Cnpj=:Cpf_Cnpj');
+    qry.ParamByName('CodEmp').AsInteger := CodEmp;
+    qry.ParamByName('Codigo').AsInteger := Codigo;
+    qry.ParamByName('Nome').AsString := Nome;
+    qry.ParamByName('Cpf_Cnpj').AsString := Cpf_Cnpj;
+    qry.ParamByName('Ativo').AsString := 'S';
+    qry.ExecSQL;
+
+      if qry.RowsAffected = 0 then
+      begin
+        ARetorno := 'Falha ao cadastrar cliente solicite suporte..';
+      end
+      else if qry.RowsAffected > 0 then
+     begin
+        ARetorno := 'Cliente cadastrado com sucesso..';
+        Result := true;
+     end;
+
+   finally
+   qry.DisposeOf;
+   end;
 
 end;
 

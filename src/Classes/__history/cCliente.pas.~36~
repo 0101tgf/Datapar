@@ -30,7 +30,8 @@ type
     constructor Create(AConexao:TFDConnection);
     destructor Destroy; override;
     function fConsultaCliente(ANome:String;out ARetorno:String;out AQry : TFDQuery):Boolean;
-
+    function fExcluirCliente(ACodigo: Integer; out ARetorno:String):Boolean;
+    function fGeraNumeroCliente:Boolean; {ok}
 End;
 
 implementation
@@ -71,7 +72,6 @@ begin
 
     if AQry.RecordCount = 0 then
     begin
-      Result := true;
       ARetorno := 'Nenhum cliente encontrado..';
       exit;
     end
@@ -84,6 +84,68 @@ begin
   except
   ARetorno := 'Falha ao consultar clientes, solicite suporte..';
   Result := false;
+  end;
+
+end;
+
+function TCliente.fExcluirCliente(ACodigo: Integer; out ARetorno: String): Boolean;
+var
+  qry : TFDQuery;
+begin
+
+  Result := false;
+
+  qry := TFDQuery.Create(Nil);
+  try
+
+    qry.Active := false;
+    qry.SQL.clear;
+    qry.Connection := Conexao;
+    qry.SQL.Add('delete from TAB_CLIENTES where CodEmp = :CodEmp and Codigo = :Codigo');
+    qry.ParamByName('CodEmp').AsInteger := CodEmp;
+    qry.ParamByName('Codigo').AsInteger := ACodigo;
+    qry.ExecSQL;
+
+    if qry.RowsAffected = 1 then
+    begin
+      ARetorno := 'Cliente deletado com sucesso..';
+      Result := true;
+    end
+    else
+    begin
+      ARetorno := 'Falha ao excluir cliente, solicite suporte..';
+    end;
+
+  finally
+  qry.DisposeOf;
+  end;
+
+end;
+
+function TCliente.fGeraNumeroCliente: Boolean;
+var
+  Qry : TFDQuery;
+begin
+
+  Result := false;
+
+  Qry := TFDQuery.Create(nil);
+  Qry.Connection := Conexao;
+  try
+
+    Qry.Active := false;
+    Qry.SQL.clear;
+    Qry.SQL.Add('select * from sqlite_sequence where name = ''TAB_CLIENTES'' ');
+    Qry.Active := true;
+
+    if Qry.RecordCount > 0 then
+    begin
+    Codigo := Qry.FieldByName('seq').AsInteger+1;
+    Result := true;
+    end;
+
+  finally
+  Qry.DisposeOf;
   end;
 
 end;

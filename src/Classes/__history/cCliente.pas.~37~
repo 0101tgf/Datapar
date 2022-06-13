@@ -143,11 +143,6 @@ begin
     begin
     Codigo := Qry.FieldByName('seq').AsInteger+1;
     Result := true;
-    end
-    else if Qry.RecordCount = 0 then
-    begin
-    Codigo := 1;
-    Result := true;
     end;
 
   finally
@@ -172,7 +167,7 @@ begin
     qry.SQL.Add('insert into TAB_CLIENTES(CodEmp,Codigo,Nome,Cpf_Cnpj,Ativo) ');
     qry.SQL.Add('values (:CodEmp,:Codigo,:Nome,:Cpf_Cnpj,:Ativo)');
     qry.SQL.Add('ON CONFLICT(Codigo) DO UPDATE SET ');
-    qry.SQL.Add('Nome=:Nome, Cpf_Cnpj=:Cpf_Cnpj');
+    qry.SQL.Add('Nome=:Nome, Cpf_Cnpj=');
     qry.ParamByName('CodEmp').AsInteger := CodEmp;
     qry.ParamByName('Codigo').AsInteger := Codigo;
     qry.ParamByName('Nome').AsString := Nome;

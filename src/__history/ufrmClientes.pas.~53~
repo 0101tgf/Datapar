@@ -58,6 +58,7 @@ type
     qry_CadastroNome: TStringField;
     qry_CadastroCpf_Cnpj: TStringField;
     qry_CadastroAtivo: TStringField;
+    pnl_Cadastro: TPanel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btn_FecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -67,9 +68,11 @@ type
     procedure edt_ConsultaClienteKeyPress(Sender: TObject; var Key: Char);
     procedure btn_ConClienteClick(Sender: TObject);
     procedure SpeedButton_ExcluirClick(Sender: TObject);
+    procedure btn_SalvarClick(Sender: TObject);
   private
     { Private declarations }
     procedure pLimparCampos;
+    function fValidaCamposObrigatorios:Boolean;
   public
     { Public declarations }
   end;
@@ -87,6 +90,7 @@ procedure TfrmClientes.btn_CancelarClick(Sender: TObject);
 begin
 pLimparCampos;
 PageControl_Cad.TabIndex := 0;
+pnl_Cadastro.Enabled := false;
 end;
 
 procedure TfrmClientes.btn_ConClienteClick(Sender: TObject);
@@ -129,10 +133,10 @@ begin
   oCliente := TCliente.Create(dm.Conexao);
   try
 
-    oCliente.CodEmp := frmPrincipal.vCodEmpLogado;
 
     if oCliente.fGeraNumeroCliente then
     begin
+      pnl_Cadastro.Enabled := true;
       edt_CodCliente.Text := oCliente.Codigo.ToString;
       edt_NomeCliente.SetFocus;
     end
@@ -144,6 +148,17 @@ begin
 
   finally
   oCliente.DisposeOf;
+  end;
+
+end;
+
+procedure TfrmClientes.btn_SalvarClick(Sender: TObject);
+begin
+
+  if not fValidaCamposObrigatorios then
+  begin
+    ShowMessage('Por favor, preencha todos os campos..');
+    exit;
   end;
 
 end;
@@ -171,6 +186,31 @@ end;
 procedure TfrmClientes.FormShow(Sender: TObject);
 begin
   PageControl_Cad.TabIndex := 0;
+  btn_NovoClick(Sender);
+end;
+
+function TfrmClientes.fValidaCamposObrigatorios: Boolean;
+begin
+
+  Result := false;
+
+  if Trim(edt_CodCliente.Text) = EmptyStr then
+  begin
+    Exit;
+  end;
+
+  if Trim(edt_NomeCliente.Text) = EmptyStr then
+  begin
+    exit;
+  end;
+
+  if Trim(Edit_CPFCNPJ.Text) = EmptyStr then
+  begin
+    exit;
+  end;
+
+  Result := true;
+
 end;
 
 procedure TfrmClientes.pLimparCampos;

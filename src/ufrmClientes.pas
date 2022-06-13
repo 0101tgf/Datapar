@@ -69,6 +69,7 @@ type
     procedure btn_ConClienteClick(Sender: TObject);
     procedure SpeedButton_ExcluirClick(Sender: TObject);
     procedure btn_SalvarClick(Sender: TObject);
+    procedure dbg_registrosCabDblClick(Sender: TObject);
   private
     { Private declarations }
     procedure pLimparCampos;
@@ -91,6 +92,8 @@ begin
 pLimparCampos;
 PageControl_Cad.TabIndex := 0;
 pnl_Cadastro.Enabled := false;
+qry_Consulta.Active := false;
+qry_Cadastro.Active := false;
 end;
 
 procedure TfrmClientes.btn_ConClienteClick(Sender: TObject);
@@ -153,6 +156,9 @@ begin
 end;
 
 procedure TfrmClientes.btn_SalvarClick(Sender: TObject);
+var
+  oCliente : TCliente;
+  LRetorno : String;
 begin
 
   if not fValidaCamposObrigatorios then
@@ -160,6 +166,47 @@ begin
     ShowMessage('Por favor, preencha todos os campos..');
     exit;
   end;
+
+  oCliente := TCliente.Create(dm.Conexao);
+  try
+
+    oCliente.CodEmp := frmPrincipal.vCodEmpLogado;
+    oCliente.Nome := edt_NomeCliente.Text;
+    oCliente.Cpf_Cnpj := Edit_CPFCNPJ.Text;
+    oCliente.Codigo := StrToInt(edt_CodCliente.Text);
+    oCliente.Ativo := 'S';
+
+    if not (oCliente.fSalvarCliente(LRetorno)) then
+    begin
+      ShowMessage(LRetorno);
+      btn_CancelarClick(Sender);
+    end
+    else
+    begin
+      ShowMessage(LRetorno);
+      btn_NovoClick(Sender);
+    end;
+
+  finally
+  oCliente.DisposeOf;
+  end;
+
+end;
+
+procedure TfrmClientes.dbg_registrosCabDblClick(Sender: TObject);
+begin
+
+  if qry_Consulta.RecordCount = 0 then
+  begin
+    exit;
+  end;
+
+  pLimparCampos;
+  edt_CodCliente.Text := qry_Consulta.FieldByName('Codigo').AsString;
+  edt_NomeCliente.Text := qry_Consulta.FieldByName('Nome').AsString;
+  Edit_CPFCNPJ.Text := qry_Consulta.FieldByName('Cpf_Cnpj').AsString;
+  pnl_Cadastro.Enabled := true;
+  PageControl_Cad.TabIndex := 0;
 
 end;
 
@@ -216,8 +263,6 @@ end;
 procedure TfrmClientes.pLimparCampos;
 begin
 edt_ConsultaCliente.Text := '';
-qry_Consulta.Active := false;
-qry_Cadastro.Active := false;
 edt_CodCliente.Text := '';
 edt_NomeCliente.Text := '';
 Edit_CPFCNPJ.Text := '';
@@ -263,6 +308,12 @@ procedure TfrmClientes.SpeedButton_PesquisarClick(Sender: TObject);
 begin
   PageControl_Cad.TabIndex := 1;
   edt_ConsultaCliente.SetFocus;
+
+  if qry_Consulta.RecordCount > 0 then
+  begin
+    qry_Consulta.Refresh;
+  end;
+
 end;
 
 end.
